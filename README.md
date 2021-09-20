@@ -1,6 +1,9 @@
 # pyitop
 Small iTop REST API Python library. It can be used to interact with iTop REST API in case of get or update CIs.
 
+## Dependencies
+- requests
+
 ## Features
 - Get iTop CIs
 - Update iTop CIs
