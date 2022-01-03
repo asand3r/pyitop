@@ -26,21 +26,21 @@ class ItopAPI:
     def password(self, value: str):
         self.__password = value
 
-    def get(self, class_: str, key: Union[str, dict[str, str]] = "*", output_fields: list = None) -> dict:
+    def get(self, class_: str, key: Union[str, dict[str, str]] = "*", output: list = None) -> list:
         self.total_requests += 1
         key = {} if key == "*" else key
-        if not isinstance(output_fields, (list, type(None))):
+        if not isinstance(output, (list, type(None))):
             raise ValueError("output_fields must be a list")
-        output_fields = "*" if output_fields is None else ",".join([i.strip() for i in output_fields])
+        output_fields = "*" if output is None else ",".join([i.strip() for i in output])
         req_body = {'operation': 'core/get', 'class': class_, 'key': key, 'output_fields': output_fields}
         req_data = {'auth_user': self.user, 'auth_pwd': self.password, 'json_data': json.dumps(req_body)}
         resp_raw = requests.post(self.url, verify=self.ssl_verify, data=req_data)
         if not resp_raw.status_code == 200:
-            return {}
+            return []
 
         resp_json = resp_raw.json()
         if not resp_json['code']:
-            return resp_json['objects'] if resp_json['objects'] else {}
+            return [v for v in resp_json['objects'].values()] if resp_json['objects'] else []
         else:
             raise ItopAPIException(resp_json['message'])
 
