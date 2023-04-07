@@ -14,12 +14,20 @@ class ItopAPI:
 
     def __init__(self, url: str, user: str, password: str, ssl_verify: bool = False):
         self.url = url
-        self.user = user
-        self.password = password
+        self.__user = user
+        self.__password = password
         self.ssl_verify = ssl_verify
 
     @property
-    def password(self):
+    def user(self) -> str:
+        return self.__user
+
+    @user.setter
+    def user(self, value: str):
+        self.__user = value
+
+    @property
+    def password(self) -> str:
         return self.__password
 
     @password.setter
@@ -30,7 +38,8 @@ class ItopAPI:
         self.total_requests += 1
         key = {} if key == "*" else key
         if not isinstance(output, (list, type(None))):
-            raise ValueError("output_fields must be a list")
+            raise ValueError("output_fields must be a list or None to get all fields")
+
         output_fields = "*" if output is None else ",".join([i.strip() for i in output])
         req_body = {'operation': 'core/get', 'class': class_, 'key': key, 'output_fields': output_fields}
         req_data = {'auth_user': self.user, 'auth_pwd': self.password, 'json_data': json.dumps(req_body)}
